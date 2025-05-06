@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             'password' => "pass123456",
             'role' => 'admin',
         ]);
+        $this->call(OrderSeeder::class);
 
     }
 }
