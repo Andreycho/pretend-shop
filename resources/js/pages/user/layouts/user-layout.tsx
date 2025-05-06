@@ -47,7 +47,7 @@ export default function UserLayout({ children, title = "Shop" }: UserLayoutProps
             </nav>
 
             <div className="flex items-center space-x-4">
-              <Link href="/user/orders" className="hover:text-blue-200 transition-colors">
+              <Link href="/orders" className="hover:text-blue-200 transition-colors">
                 <Package className="h-6 w-6" />
               </Link>
               <Link href="/cart" className="hover:text-blue-200 transition-colors">

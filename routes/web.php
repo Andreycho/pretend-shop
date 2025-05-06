@@ -81,6 +81,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
     Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
     Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+
+    Route::get('/orders', [App\Http\Controllers\User\OrderController::class, 'index']);
+    Route::get('/orders/{id}', [App\Http\Controllers\User\OrderController::class, 'show']);
 });
 
 Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])->prefix('admin')->group(function () {
