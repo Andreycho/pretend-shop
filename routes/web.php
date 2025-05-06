@@ -63,11 +63,17 @@ Route::middleware('guest')->group(function () {
 Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('products/{id}', [ProductController::class, 'show']);
 
+Route::get('/contact', function () {
+    return Inertia::render('contact');
+})->name('contact');
+Route::get('/about', function () {
+    return Inertia::render('about');
+})->name('about');
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     Route::post('/products/{productId}/review', [ReviewController::class, 'store']);
-    // Route::get('profile/edit', [ProfileController::class, 'edit']);
-    // Route::post('profile/update', [ProfileController::class, 'update']);
+    Route::get('profile', [ProfileController::class, 'profile']);
     
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');

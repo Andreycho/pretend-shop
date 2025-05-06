@@ -27,7 +27,6 @@ export default function UserLayout({ children, title = "Shop" }: UserLayoutProps
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
-      {/* Header */}
       <header className="bg-blue-600 text-white shadow-md">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -38,9 +37,6 @@ export default function UserLayout({ children, title = "Shop" }: UserLayoutProps
             <nav className="hidden md:flex items-center space-x-8">
               <Link href="/" className="hover:text-blue-200 transition-colors">
                 Products
-              </Link>
-              <Link href="/categories" className="hover:text-blue-200 transition-colors">
-                Categories
               </Link>
               <Link href="/about" className="hover:text-blue-200 transition-colors">
                 About Us
@@ -57,7 +53,7 @@ export default function UserLayout({ children, title = "Shop" }: UserLayoutProps
               <Link href="/cart" className="hover:text-blue-200 transition-colors">
                 <ShoppingCart className="h-6 w-6" />
               </Link>
-              <Link href="/account" className="hover:text-blue-200 transition-colors">
+              <Link href="/profile" className="hover:text-blue-200 transition-colors">
                 <User className="h-6 w-6" />
               </Link>
               <button
@@ -72,7 +68,6 @@ export default function UserLayout({ children, title = "Shop" }: UserLayoutProps
         </div>
       </header>
 
-      {/* Main content */}
       <main className="py-6">
         {title && (
           <div className="container mx-auto px-4 mb-6">
@@ -82,7 +77,6 @@ export default function UserLayout({ children, title = "Shop" }: UserLayoutProps
         {children}
       </main>
 
-      {/* Footer */}
       <footer className="bg-gray-100 border-t border-gray-200 mt-12">
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
