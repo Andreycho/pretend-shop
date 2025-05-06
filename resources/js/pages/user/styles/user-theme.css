@@ -1,0 +1,38 @@
+.user-pages {
+    color: #111827 !important;
+    background-color: white !important;
+  }
+  
+  .user-pages * {
+    --tw-text-opacity: 1 !important;
+  }
+  
+  html.dark .user-pages {
+    background-color: white !important;
+    color: #111827 !important;
+  }
+  
+  /* Blue theme colors */
+  .user-pages .bg-primary {
+    background-color: #2563eb !important;
+  }
+  
+  .user-pages .text-primary {
+    color: #2563eb !important;
+  }
+  
+  .user-pages .border-primary {
+    border-color: #2563eb !important;
+  }
+  
+  .user-pages button.bg-primary,
+  .user-pages .btn-primary {
+    background-color: #2563eb !important;
+    color: white !important;
+  }
+  
+  .user-pages button.bg-primary:hover,
+  .user-pages .btn-primary:hover {
+    background-color: #1d4ed8 !important;
+  }
+  
