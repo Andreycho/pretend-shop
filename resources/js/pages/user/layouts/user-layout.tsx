@@ -31,12 +31,12 @@ export default function UserLayout({ children, title = "Shop" }: UserLayoutProps
       <header className="bg-blue-600 text-white shadow-md">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/products" className="text-2xl font-bold">
+            <Link href="/" className="text-2xl font-bold">
               Pretend Shop
             </Link>
 
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/products" className="hover:text-blue-200 transition-colors">
+              <Link href="/" className="hover:text-blue-200 transition-colors">
                 Products
               </Link>
               <Link href="/categories" className="hover:text-blue-200 transition-colors">

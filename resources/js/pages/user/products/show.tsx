@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { usePage, Link, router } from "@inertiajs/react"
-import { Star, ShoppingCart, Heart, ArrowLeft, X, Check, Minus, Plus } from "lucide-react"
+import { Star, ShoppingCart, Heart, ArrowLeft, X, Check, Minus, Plus, Edit } from "lucide-react"
 import UserLayout from "../layouts/user-layout"
 import { useState } from "react"
 
@@ -21,6 +21,7 @@ interface Review {
   id: number
   user: {
     name: string
+    id: number
   }
   rating: number
   comment: string
@@ -28,22 +29,30 @@ interface Review {
 }
 
 export default function ProductShow() {
-  const { product, flash } = usePage().props as unknown as {
+  const { product, flash, auth } = usePage().props as unknown as {
     product: Product
     flash?: { message?: string; type?: string }
+    auth: { user: { id: number } }
   }
+
+  const userReview = product.reviews.find((review) => review.user.id === auth.user.id)
+
   const [showReviewModal, setShowReviewModal] = useState(false)
-  const [rating, setRating] = useState(5)
-  const [comment, setComment] = useState("")
+  const [rating, setRating] = useState(userReview ? userReview.rating : 5)
+  const [comment, setComment] = useState(userReview ? userReview.comment : "")
   const [hoveredRating, setHoveredRating] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [quantity, setQuantity] = useState(1)
   const [addingToCart, setAddingToCart] = useState(false)
   const [showCartNotification, setShowCartNotification] = useState(false)
 
+  // Calculate average rating
   const avgRating = product.reviews.length
     ? product.reviews.reduce((sum, review) => sum + review.rating, 0) / product.reviews.length
     : 0
+
+  // Filter out the user's review from other reviews
+  const otherReviews = product.reviews.filter((review) => review.user.id !== auth.user.id)
 
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,8 +67,6 @@ export default function ProductShow() {
       {
         onSuccess: () => {
           setShowReviewModal(false)
-          setRating(5)
-          setComment("")
           setIsSubmitting(false)
         },
         onError: () => {
@@ -104,6 +111,14 @@ export default function ProductShow() {
     }
   }
 
+  const openReviewModal = () => {
+    if (userReview) {
+      setRating(userReview.rating)
+      setComment(userReview.comment)
+    }
+    setShowReviewModal(true)
+  }
+
   return (
     <UserLayout>
       <div className="container mx-auto px-4">
@@ -129,13 +144,12 @@ export default function ProductShow() {
           </div>
         )}
 
-        <Link href="/products" className="inline-flex items-center text-sm mb-6 hover:underline text-blue-600">
+        <Link href="/" className="inline-flex items-center text-sm mb-6 hover:underline text-blue-600">
           <ArrowLeft className="h-4 w-4 mr-1" />
           Back to Products
         </Link>
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {/* Product Image with Overlay for Title Protection */}
           <div className="bg-white rounded-xl overflow-hidden border relative">
             <img
               src={product.image || "/placeholder.svg"}
@@ -144,7 +158,6 @@ export default function ProductShow() {
             />
           </div>
 
-          {/* Product Details */}
           <div className="flex flex-col">
             <div className="inline-block bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-medium mb-2">
               {product.category}
@@ -211,11 +224,56 @@ export default function ProductShow() {
           </div>
         </div>
 
+        {userReview && (
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-gray-900">My Review</h2>
+              <button onClick={openReviewModal} className="text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                <Edit className="h-4 w-4" />
+                Edit Review
+              </button>
+            </div>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <p className="font-semibold text-gray-900">
+                    {userReview.user.name} <span className="text-blue-600">(You)</span>
+                  </p>
+                  <div className="flex items-center mt-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-4 h-4 ${i < userReview.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <span className="text-xs text-gray-500">
+                  {userReview.created_at ? new Date(userReview.created_at).toLocaleDateString() : "Recently"}
+                </span>
+              </div>
+              <p className="mt-2 text-sm text-gray-600">{userReview.comment}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Other Reviews Section */}
         <div className="mb-12">
-          <h2 className="text-xl font-bold mb-6 text-gray-900">Customer Reviews</h2>
-          {product.reviews.length ? (
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-gray-900">{userReview ? "Other Reviews" : "Customer Reviews"}</h2>
+            {!userReview && (
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                onClick={openReviewModal}
+              >
+                Write a Review
+              </button>
+            )}
+          </div>
+
+          {otherReviews.length > 0 ? (
             <div className="space-y-6">
-              {product.reviews.map((review) => (
+              {otherReviews.map((review) => (
                 <div key={review.id} className="bg-gray-50 rounded-lg p-4">
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -239,23 +297,30 @@ export default function ProductShow() {
             </div>
           ) : (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">There are currently no reviews for this product.</p>
-              <button
-                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-                onClick={() => setShowReviewModal(true)}
-              >
-                Be the first to write a review
-              </button>
+              <p className="text-gray-500">
+                {userReview
+                  ? "There are no other reviews for this product yet."
+                  : "There are currently no reviews for this product."}
+              </p>
+              {!userReview && (
+                <button
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  onClick={openReviewModal}
+                >
+                  Be the first to write a review
+                </button>
+              )}
             </div>
           )}
         </div>
 
-        {/* Review Form Modal */}
         {showReviewModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
               <div className="flex justify-between items-center p-4 border-b">
-                <h3 className="text-lg font-bold text-gray-900">Write a Review</h3>
+                <h3 className="text-lg font-bold text-gray-900">
+                  {userReview ? "Edit Your Review" : "Write a Review"}
+                </h3>
                 <button onClick={() => setShowReviewModal(false)} className="text-gray-500 hover:text-gray-700">
                   <X className="h-5 w-5" />
                 </button>
@@ -314,7 +379,7 @@ export default function ProductShow() {
                     disabled={isSubmitting}
                     className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors disabled:opacity-50"
                   >
-                    {isSubmitting ? "Submitting..." : "Submit Review"}
+                    {isSubmitting ? "Submitting..." : userReview ? "Update Review" : "Submit Review"}
                   </button>
                 </div>
               </form>

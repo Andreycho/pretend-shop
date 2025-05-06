@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Review;
+use App\Models\Product;
 
 class ReviewController extends Controller
 {
@@ -15,15 +16,26 @@ class ReviewController extends Controller
             'comment' => 'nullable|string',
         ]);
 
-        $review = new Review([
-            'user_id' => auth()->id(),
-            // 'user_id' => 1, 
-            'product_id' => $productId,
-            'rating' => $validated['rating'],
-            'comment' => $validated['comment'] ?? '',
-        ]);
+        $existingReview = Review::where('user_id', auth()->id())
+            ->where('product_id', $productId)
+            ->first();
 
-        $review->save();
-        return back()->with('message', 'Review submitted!');
+        if ($existingReview) {
+            $existingReview->rating = $validated['rating'];
+            $existingReview->comment = $validated['comment'] ?? '';
+            $existingReview->save();
+            
+            return back()->with('message', 'Review updated successfully!');
+        } else {
+            $review = new Review([
+                'user_id' => auth()->id(),
+                'product_id' => $productId,
+                'rating' => $validated['rating'],
+                'comment' => $validated['comment'] ?? '',
+            ]);
+
+            $review->save();
+            return back()->with('message', 'Review submitted successfully!');
+        }
     }
 }

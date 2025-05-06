@@ -69,7 +69,7 @@ export default function CartIndex() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
-          <Link href="/products" className="text-blue-600 hover:underline flex items-center">
+          <Link href="/" className="text-blue-600 hover:underline flex items-center">
             <ArrowLeft className="h-4 w-4 mr-1" />
             Continue Shopping
           </Link>
@@ -185,7 +185,7 @@ export default function CartIndex() {
             <ShoppingCart className="h-16 w-16 mx-auto mb-4 text-gray-400" />
             <h2 className="text-xl font-semibold mb-2 text-gray-900">Your cart is empty</h2>
             <p className="text-gray-500 mb-6">Looks like you haven't added any products to your cart yet.</p>
-            <Link href="/products">
+            <Link href="/">
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
                 Start Shopping
               </button>
